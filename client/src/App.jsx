@@ -11,6 +11,21 @@ function App() {
     viento_media: ''
   })
 
+  const meses = [
+    { value: 1, label: 'Enero' },
+    { value: 2, label: 'Febrero' },
+    { value: 3, label: 'Marzo' },
+    { value: 4, label: 'Abril' },
+    { value: 5, label: 'Mayo' },
+    { value: 6, label: 'Junio' },
+    { value: 7, label: 'Julio' },
+    { value: 8, label: 'Agosto' },
+    { value: 9, label: 'Septiembre' },
+    { value: 10, label: 'Octubre' },
+    { value: 11, label: 'Noviembre' },
+    { value: 12, label: 'Diciembre' }
+  ]
+
   const [prediction, setPrediction] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -30,24 +45,23 @@ function App() {
     setPrediction(null)
 
     try {
-      const mes = parseInt(formData.mes)
-      if (mes < 1 || mes > 12) {
-        setError('El mes debe estar entre 1 y 12')
-        setLoading(false)
-        return
-      }
-
-      const response = await axios.post('http://127.0.0.1:8000/predict', {
+      const response = await axios.post('https://proyecto-ml-x9fc.onrender.com/predict', {
         anio: parseInt(formData.anio),
         mes: parseInt(formData.mes),
         turismo_alto: formData.turismo_alto ? 1 : 0,
         temperatura_media: parseFloat(formData.temperatura_media),
         viento_media: parseFloat(formData.viento_media)
+      }, {
+        timeout: 20000 // 20 segundos de timeout
       })
 
       setPrediction(response.data.prediction)
     } catch (err) {
-      setError('Error al realizar la predicción: ' + (err.response?.data?.detail || err.message))
+      if (err.code === 'ECONNABORTED') {
+        setError('La llamada tardó demasiado tiempo. Inténtalo de nuevo.')
+      } else {
+        setError('Error al realizar la predicción: ' + (err.response?.data?.detail || err.message))
+      }
     } finally {
       setLoading(false)
     }
@@ -80,19 +94,22 @@ function App() {
             </div>
 
             <div className="form-group">
-              <label htmlFor="mes">Mes (1-12)</label>
-              <input
-                type="number"
+              <label htmlFor="mes">Mes</label>
+              <select
                 id="mes"
                 name="mes"
                 value={formData.mes}
                 onChange={handleChange}
                 required
-                min="1"
-                max="12"
-                placeholder="Ej: 6"
                 className="form-input"
-              />
+              >
+                <option value="">Selecciona un mes</option>
+                {meses.map(mes => (
+                  <option key={mes.value} value={mes.value}>
+                    {mes.label}
+                  </option>
+                ))}
+              </select>
             </div>
 
             <div className="form-group">
@@ -164,32 +181,9 @@ function App() {
           <div className="prediction-result">
             <h2>Resultado del Cálculo</h2>
             <div className="prediction-value">
-              <span className="prediction-label">Consumo estimado:</span>
-              <span className="prediction-number">{prediction.toFixed(2)}</span>
-            </div>
-            <div className="prediction-details">
-              <div className="detail-grid">
-                <div className="detail-item">
-                  <span className="detail-label">Año:</span>
-                  <span className="detail-value">{formData.anio}</span>
-                </div>
-                <div className="detail-item">
-                  <span className="detail-label">Mes:</span>
-                  <span className="detail-value">{formData.mes}</span>
-                </div>
-                <div className="detail-item">
-                  <span className="detail-label">Temperatura:</span>
-                  <span className="detail-value">{formData.temperatura_media}°C</span>
-                </div>
-                <div className="detail-item">
-                  <span className="detail-label">Viento:</span>
-                  <span className="detail-value">{formData.viento_media} km/h</span>
-                </div>
-                <div className="detail-item">
-                  <span className="detail-label">Turismo alto:</span>
-                  <span className="detail-value">{formData.turismo_alto ? 'Sí' : 'No'}</span>
-                </div>
-              </div>
+              <span className="prediction-text">
+                El año {formData.anio} en el mes {meses.find(m => m.value === parseInt(formData.mes))?.label || formData.mes} se consumirán {prediction.toFixed(2)} Gwh
+              </span>
             </div>
           </div>
         )}
