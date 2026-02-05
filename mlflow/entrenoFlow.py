@@ -10,8 +10,8 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 import os
 
-os.environ['DATABRICKS_HOST'] = os.getenv('DATABRICKS_HOST')
-os.environ['DATABRICKS_TOKEN'] = os.getenv('DATABRICKS_TOKEN')
+os.environ['DATABRICKS_HOST'] = 'https://dbc-3bee01e7-d7a2.cloud.databricks.com'
+os.environ['DATABRICKS_TOKEN'] = 'dapiab1685aae50187a861a3a15821058a49'
 
 print("DATABRICKS_HOST:", os.getenv('DATABRICKS_HOST'))
 print("DATABRICKS_TOKEN:", "***" if os.getenv('DATABRICKS_TOKEN') else "NO HAY TOKEN")

@@ -10,8 +10,8 @@ import numpy as np
 
 import os
 
-os.environ['DATABRICKS_HOST'] = os.getenv('DATABRICKS_HOST')
-os.environ['DATABRICKS_TOKEN'] = os.getenv('DATABRICKS_TOKEN')
+os.environ['DATABRICKS_HOST'] = 'https://dbc-3bee01e7-d7a2.cloud.databricks.com'
+os.environ['DATABRICKS_TOKEN'] = 'dapiab1685aae50187a861a3a15821058a49'
 
 mlflow.set_tracking_uri("databricks")
 
