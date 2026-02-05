@@ -1,0 +1,37 @@
+artifact_path: file:C:/Users/coman/Desktop/Desktop/ProyectoML/mlflow/mlruns/1/models/m-bd32511fa6f84e9fa6b316a967625cfe/artifacts
+flavors:
+  python_function:
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.sklearn
+    model_path: model.pkl
+    predict_fn: predict
+    python_version: 3.13.9
+  sklearn:
+    code: null
+    pickled_model: model.pkl
+    serialization_format: cloudpickle
+    sklearn_version: 1.8.0
+is_signature_from_type_hint: false
+mlflow_version: 3.8.1
+model_id: m-bd32511fa6f84e9fa6b316a967625cfe
+model_size_bytes: 27733
+model_uuid: m-bd32511fa6f84e9fa6b316a967625cfe
+prompts: null
+run_id: b89000b3b2ec4585b520ed7333e49a0e
+saved_input_example_info:
+  artifact_path: input_example.json
+  pandas_orient: split
+  serving_input_path: serving_input_example.json
+  type: dataframe
+signature:
+  inputs: '[{"type": "double", "name": "anio", "required": true}, {"type": "double",
+    "name": "temperatura_media", "required": true}, {"type": "double", "name": "viento_media",
+    "required": true}, {"type": "long", "name": "turismo_alto", "required": true},
+    {"type": "double", "name": "mes_sin", "required": true}, {"type": "double", "name":
+    "mes_cos", "required": true}]'
+  outputs: '[{"type": "double", "required": true}]'
+  params: null
+type_hint_from_example: false
+utc_time_created: '2026-02-05 16:34:45.738456'

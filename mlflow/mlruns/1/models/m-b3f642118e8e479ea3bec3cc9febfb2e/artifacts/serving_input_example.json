@@ -1,0 +1,22 @@
+{
+  "dataframe_split": {
+    "columns": [
+      "anio",
+      "temperatura_media",
+      "viento_media",
+      "turismo_alto",
+      "mes_sin",
+      "mes_cos"
+    ],
+    "data": [
+      [
+        1.6965976098118127,
+        -0.4103655558341573,
+        0.6971554834914092,
+        0,
+        -2.4492935982947064e-16,
+        1.0
+      ]
+    ]
+  }
+}

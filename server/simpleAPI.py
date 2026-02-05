@@ -8,10 +8,14 @@ import mlflow
 import pandas as pd
 import numpy as np
 
+import os
 
-mlflow.set_tracking_uri("http://127.0.0.1:5000")# la URL de MLFLOW. Aquí es local, pero si estuviese en la nube...
+os.environ['DATABRICKS_HOST'] = 'https://dbc-3bee01e7-d7a2.cloud.databricks.com'
+os.environ['DATABRICKS_TOKEN'] = 'dapiab1685aae50187a861a3a15821058a49'
 
-URL_MODELO = "models:/prueba/1"
+mlflow.set_tracking_uri("databricks")
+
+URL_MODELO = "models:/workspace.default.energia_tenerife/1"
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):

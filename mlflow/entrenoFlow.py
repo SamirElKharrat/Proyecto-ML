@@ -8,7 +8,13 @@ from sklearn.compose import ColumnTransformer
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
+import os
 
+os.environ['DATABRICKS_HOST'] = 'https://dbc-3bee01e7-d7a2.cloud.databricks.com'
+os.environ['DATABRICKS_TOKEN'] = 'dapiab1685aae50187a861a3a15821058a49'
+
+print("DATABRICKS_HOST:", os.getenv('DATABRICKS_HOST'))
+print("DATABRICKS_TOKEN:", "***" if os.getenv('DATABRICKS_TOKEN') else "NO HAY TOKEN")
 
 # Cojo datos y los divido para entrenar.
 df_energia = pd.read_csv("df_energia_limpio.csv")
@@ -31,8 +37,8 @@ X_train, X_test, y_train, y_test = train_test_split(
 )
 
 # Aquí establezco los parámetros de MLFlow.
-mlflow.set_tracking_uri("sqlite:///mlflow.db")
-mlflow.set_experiment("Energía Tenerife 4 - Random Forest")
+mlflow.set_tracking_uri("databricks")
+mlflow.set_experiment("/Users/samirelkharrat@gmail.com/Energía Tenerife - Random Forest")
 
 # Al igual que vimos con el CVGridSearch, pongo unos cuántos valores de hiperparámetros.
 max_depths = [None, 5, 10]
@@ -63,26 +69,27 @@ for max_depth in max_depths:
                     f"Lanzamiento de Random Forest, con profundidad_hoja={max_depth} y "
                     f" split={min_samples_split}"
                 )
-
-                # Iniciamos experimento
-                with mlflow.start_run(run_name=run_name):
-
-                    pipeline = Pipeline([
-                        ('preprocessor', preprocessor),
-                        ('forest', RandomForestRegressor(
-                            max_depth=max_depth,
-                            min_samples_split=min_samples_split,
-                            n_estimators=n_estimator,
+                
+                pipeline = Pipeline([
+                    ('preprocessor', preprocessor),
+                    ('forest', RandomForestRegressor(
+                        max_depth=max_depth,
+                        min_samples_split=min_samples_split,
+                        n_estimators=n_estimator,
                             min_samples_leaf=min_samples_leaf,
                             random_state=42
                         ))
                     ])
-                    
-                    # Entrenar el pipeline (automáticamente escala solo las columnas necesarias)
-                    pipeline.fit(X_train, y_train)
+                
+                
+                # Entrenar el pipeline (automáticamente escala solo las columnas necesarias)
+                pipeline.fit(X_train, y_train)
 
-                    # Aquí predigo
-                    y_pred = pipeline.predict(X_test)
+                # Aquí predigo
+                y_pred = pipeline.predict(X_test)
+
+                # Iniciamos experimento
+                with mlflow.start_run(run_name=run_name):
 
                     # Saco las métricas
                     mse = mean_squared_error(y_test, y_pred)
