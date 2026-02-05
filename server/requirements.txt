@@ -5,3 +5,4 @@ scikit-learn
 pandas
 numpy
 databricks-sdk
+mlflow
