@@ -19,8 +19,6 @@ URL_MODELO = "models:/workspace.default.energia_tenerife/1"
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Antes del yield se lanzará al iniciar el server
-    # cargamos el modelo con pickle
     try:
         app.state.modelo = mlflow.sklearn.load_model(URL_MODELO)
         print("Modelo cargado desde MLflow")
@@ -29,8 +27,7 @@ async def lifespan(app: FastAPI):
         app.state.modelo = None
 
     yield
-
-    # Esto se lanzará cuando apaguemos el server.
+    
     print("Aplicación detenida")
 
 # -----------------------
@@ -58,12 +55,19 @@ class InputData(BaseModel):
     turismo_alto: int
     mes: int
     
+
+@app.get("/health")
+def health():
+    if app.state.modelo is None:
+        return {"status": "error", "message": "Modelo no cargado"}
+    
+    return {"status": "ok"}
+    
+
+    
     
 @app.post("/predict")
 def predict(data: InputData):
-    if app.state.modelo is None:
-        raise HTTPException(status_code=500, detail="Modelo no cargado")
-    
     # Calculo el sin y cos del mes
     mes_sin = np.sin(2 * np.pi * data.mes / 12)
     mes_cos = np.cos(2 * np.pi * data.mes / 12)
