@@ -7,11 +7,13 @@ from sklearn.preprocessing import StandardScaler
 import mlflow
 import pandas as pd
 import numpy as np
-
 import os
 
-os.environ['DATABRICKS_HOST'] = 'https://dbc-3bee01e7-d7a2.cloud.databricks.com'
-os.environ['DATABRICKS_TOKEN'] = 'dapiab1685aae50187a861a3a15821058a49'
+from dotenv import load_dotenv
+load_dotenv()
+
+os.environ['DATABRICKS_HOST'] = os.getenv('DATABRICKS_HOST')
+os.environ['DATABRICKS_TOKEN'] = os.getenv('DATABRICKS_TOKEN')
 
 mlflow.set_tracking_uri("databricks")
 
@@ -63,8 +65,6 @@ def health():
     
     return {"status": "ok"}
     
-
-    
     
 @app.post("/predict")
 def predict(data: InputData):
@@ -81,24 +81,9 @@ def predict(data: InputData):
         "mes_sin": mes_sin,
         "mes_cos": mes_cos
     }])
-
-    
-    print(df)
     
     # Predecir
     prediction = app.state.modelo.predict(df)
-    
-     # Ver qué pasa internamente
-    if hasattr(app.state.modelo, 'named_steps'):
-        # Es un pipeline
-        print("Pipeline steps:", app.state.modelo.named_steps.keys())
-        # Ver la transformación
-        transformed = app.state.modelo.named_steps['preprocessor'].transform(df)
-        print("Datos escalados:", transformed)
-    
-    
-    print("Prediction:", prediction)
-
     
     return {
         "anio": data.anio,
