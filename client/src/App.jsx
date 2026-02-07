@@ -182,7 +182,7 @@ function App() {
             <h2>Resultado del Cálculo</h2>
             <div className="prediction-value">
               <span className="prediction-text">
-                En el año {formData.anio} en {meses.find(m => m.value === parseInt(formData.mes))?.label || formData.mes} se consumirán {prediction.toFixed(2)} Gwh
+                En el año {formData.anio} en {meses.find(m => m.value === parseInt(formData.mes))?.label || formData.mes} se consumirán {prediction.toFixed(2)} Mwh
               </span>
             </div>
           </div>
